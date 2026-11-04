@@ -17,14 +17,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.window.Dialog
 import com.searchjobsai.domain.model.ApplicationStatus
 import com.searchjobsai.domain.model.JobOffer
 import com.searchjobsai.presentation.components.AiMatchBadge
 import com.searchjobsai.presentation.components.GeoBadge
 import com.searchjobsai.presentation.theme.*
-import java.awt.Toolkit
-import java.awt.datatransfer.StringSelection
 
 @Composable
 fun JobDetailDialog(
@@ -240,9 +240,9 @@ fun JobDetailDialog(
                                             fontSize = 11.sp
                                         )
 
+                                        val clipboardManager = LocalClipboardManager.current
                                         TextButton(onClick = {
-                                            val clipboard = Toolkit.getDefaultToolkit().systemClipboard
-                                            clipboard.setContents(StringSelection(job.customPitch), null)
+                                            clipboardManager.setText(AnnotatedString(job.customPitch))
                                             copiedNotice = true
                                         }) {
                                             Text(if (copiedNotice) "¡Copiado! ✓" else "Copiar 📋", fontSize = 11.sp)
