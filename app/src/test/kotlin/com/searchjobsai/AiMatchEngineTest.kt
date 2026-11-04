@@ -64,4 +64,11 @@ class AiMatchEngineTest {
 
         assertTrue(filtered.all { it.skills.contains("KMP") }, "All returned jobs must contain KMP skill")
     }
+
+    @Test
+    fun testJobOffersContainApplyUrlAndSource() {
+        val jobs = repository.jobs.value
+        assertTrue(jobs.all { it.applyUrl.isNotBlank() }, "All jobs should have an applyUrl")
+        assertTrue(jobs.all { it.source.isNotBlank() }, "All jobs should have a source specified")
+    }
 }

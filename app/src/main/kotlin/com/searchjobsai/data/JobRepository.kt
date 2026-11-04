@@ -1,5 +1,6 @@
 package com.searchjobsai.data
 
+import com.searchjobsai.data.network.LiveJobSearchService
 import com.searchjobsai.domain.model.ApplicationStatus
 import com.searchjobsai.domain.model.DeveloperProfile
 import com.searchjobsai.domain.model.GeoPriorityTier
@@ -16,7 +17,16 @@ enum class SortOption(val label: String) {
     NEWEST("⏱️ Más Recientes")
 }
 
+enum class SyncState {
+    IDLE,
+    SYNCING,
+    SUCCESS,
+    ERROR
+}
+
 class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) {
+
+    private val liveService = LiveJobSearchService(profile)
 
     private val initialJobs = listOf(
         JobOffer(
@@ -31,7 +41,7 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
             salaryDisplay = "S/ 18,000 - S/ 24,000 PEN / mes (~$65k-$80k USD)",
             salaryMinK = 65,
             timezone = "PET (UTC-5) Local",
-            postedAgo = "Hace 1 hora",
+            postedAgo = "Destacado Perú",
             skills = listOf("Kotlin", "Jetpack Compose", "Coroutines", "Clean Arch", "Hilt", "FinTech"),
             description = "Lidera la evolución de la super-app de pagos más usada de Perú construyendo módulos en Compose puro y arquitectura MVI.",
             responsibilities = "Diseñar pantallas transaccionales de alta concurrencia en Jetpack Compose, modularización por features y optimización de métricas de inicio en frío.",
@@ -39,7 +49,9 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
             aiVerdict = "¡Afinidad sobresaliente en tu país! Trabajo 100% remoto con contratación en planilla completa de Perú o modalidad mixta.",
             matchedSkills = listOf("Kotlin", "Jetpack Compose", "Coroutines & Flow", "Clean Architecture", "Hilt", "FinTech"),
             skillGaps = listOf("KMP (Evaluación para 2027)"),
-            customPitch = ""
+            customPitch = "",
+            applyUrl = "https://www.bcp.com.pe/trabaja-con-nosotros",
+            source = "BCP Careers Perú"
         ),
         JobOffer(
             id = 102L,
@@ -53,7 +65,7 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
             salaryDisplay = "$85,000 - $110,000 USD / yr",
             salaryMinK = 85,
             timezone = "PET (UTC-5) Local",
-            postedAgo = "Hace 2 horas",
+            postedAgo = "Destacado Perú",
             skills = listOf("Kotlin", "Jetpack Compose", "KMP", "Coroutines", "Clean Arch", "FinTech"),
             description = "Lidera la arquitectura móvil del ecosistema de envíos y pagos con adopción de Kotlin Multiplatform.",
             responsibilities = "Definir estándares de arquitectura en KMP, liderar code reviews de módulos compartidos y coordinar con equipos de toda la región.",
@@ -61,7 +73,9 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
             aiVerdict = "Oferta de primer nivel con entidad legal en Perú. Compensación indexada en USD con beneficios locales superiores.",
             matchedSkills = listOf("Kotlin", "Jetpack Compose", "KMP", "Clean Architecture", "Coroutines"),
             skillGaps = listOf("GraphQL básico"),
-            customPitch = ""
+            customPitch = "",
+            applyUrl = "https://mercadolibre.com/empleos",
+            source = "Mercado Libre Careers"
         ),
         JobOffer(
             id = 103L,
@@ -75,59 +89,65 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
             salaryDisplay = "$115,000 - $135,000 USD / yr",
             salaryMinK = 115,
             timezone = "Async / PET (UTC-5) Compatible",
-            postedAgo = "Hace 4 horas",
-            skills = listOf("Kotlin", "Jetpack Compose", "Coroutines", "Hilt", "Room/SQLDelight"),
+            postedAgo = "Remoto Americas",
+            skills = listOf("Kotlin", "Jetpack Compose", "Coroutines", "Hilt", "Room"),
             description = "Construye nuevas experiencias visuales 100% en Jetpack Compose para aplicaciones móviles de código abierto.",
             responsibilities = "Desarrollo de nuevas features en Compose puro, refactorización de código heredado, pruebas unitarias automatizadas con Mockk y contribución a proyectos open-source.",
             aiFitScore = 95,
             aiVerdict = "Empresa con cultura 100% asíncrona ideal para trabajar desde Perú. Pago directo en USD mediante Deel.",
             matchedSkills = listOf("Kotlin", "Jetpack Compose", "Coroutines & Flow", "Hilt"),
-            skillGaps = listOf("SQLDelight (Familiaridad básica recomendada)"),
-            customPitch = ""
+            skillGaps = listOf("SQLDelight"),
+            customPitch = "",
+            applyUrl = "https://automattic.com/work-with-us/",
+            source = "Automattic Careers"
         ),
         JobOffer(
             id = 104L,
-            title = "Android Engineer - FinTech & Crypto Payments",
-            company = "Kraken Digital",
-            companyIcon = "🐙",
-            location = "Remoto (Americas: LatAm & US)",
+            title = "Staff Mobile Engineer (Fintech & Core Payments)",
+            company = "Kushki Pagos LATAM",
+            companyIcon = "💳",
+            location = "100% Remoto (LatAm / Perú)",
             is100Remote = true,
             geoTier = GeoPriorityTier.AMERICAS_UTC5,
-            countryOrigin = "Americas",
-            salaryDisplay = "$100,000 - $130,000 USD / yr",
-            salaryMinK = 100,
-            timezone = "EST / PST Friendly",
-            postedAgo = "Hace 1 día",
-            skills = listOf("Kotlin", "Clean Arch", "Coroutines", "Room/SQLDelight", "FinTech"),
-            description = "Desarrolla flujos financieros de alta seguridad y baja latencia en Android con Kotlin y SQLDelight.",
-            responsibilities = "Manejo de almacenamiento encriptado, integración con APIs WebSockets y diseño de flujos reactivos resistentes a pérdida de conexión.",
-            aiFitScore = 91,
-            aiVerdict = "Gran oportunidad de compensación en USD para LatAm. Encajas sólidamente por tu experiencia en izipay.",
-            matchedSkills = listOf("Kotlin", "Coroutines & Flow", "Clean Arch", "FinTech"),
-            skillGaps = listOf("Ktor WebSockets"),
-            customPitch = ""
+            countryOrigin = "LatAm",
+            salaryDisplay = "$80,000 - $105,000 USD / yr",
+            salaryMinK = 80,
+            timezone = "PET / COT (UTC-5)",
+            postedAgo = "Fintech LatAm",
+            skills = listOf("Kotlin", "Jetpack Compose", "MVI", "Clean Arch", "FinTech"),
+            description = "Escala el SDK de pagos móviles y la infraestructura de cobros digitales en toda América Latina.",
+            responsibilities = "Optimizar la tasa de éxito de pagos móviles, mantener SDKs livianos y aplicar Clean Architecture estricto.",
+            aiFitScore = 96,
+            aiVerdict = "Match altísimo por tu background en izipay y billeteras digitales. Entorno de trabajo 100% alineado con tu huso horario.",
+            matchedSkills = listOf("Kotlin", "FinTech", "Clean Architecture", "Jetpack Compose"),
+            skillGaps = listOf("Seguridad PCI-DSS Nivel 1"),
+            customPitch = "",
+            applyUrl = "https://kushkipagos.com/careers",
+            source = "Kushki Careers"
         ),
         JobOffer(
             id = 105L,
-            title = "Staff Android Architect (KMP & Jetpack Compose)",
-            company = "Stripe Remote Global",
-            companyIcon = "💳",
-            location = "100% Remoto (Worldwide)",
+            title = "Principal Android Engineer (KMP & Mobile Core)",
+            company = "DuckDuckGo",
+            companyIcon = "🦆",
+            location = "100% Remoto (Global B2B)",
             is100Remote = true,
             geoTier = GeoPriorityTier.WORLDWIDE_ASYNC,
             countryOrigin = "Global",
             salaryDisplay = "$145,000 - $170,000 USD / yr",
             salaryMinK = 145,
             timezone = "EST / UTC Flexible",
-            postedAgo = "Hace 5 horas",
+            postedAgo = "Global Remote",
             skills = listOf("Kotlin", "Jetpack Compose", "KMP", "Coroutines", "Clean Arch"),
             description = "Lidera la migración de módulos core a Kotlin Multiplatform y arquitectura MVI basada en Compose.",
             responsibilities = "Diseñar componentes modulares compartidos entre Android y Desktop JVM, liderar adopción de KMP y optimizar CI/CD.",
             aiFitScore = 94,
             aiVerdict = "Afinidad casi perfecta. Tu dominio de Jetpack Compose y Clean Architecture cumple al 100% sus requerimientos principales.",
             matchedSkills = listOf("Kotlin", "Jetpack Compose", "Coroutines & Flow", "Clean Architecture", "KMP"),
-            skillGaps = listOf("Nativo C++ (NDK) - Deseable"),
-            customPitch = ""
+            skillGaps = listOf("Nativo C++ (NDK)"),
+            customPitch = "",
+            applyUrl = "https://duckduckgo.com/hiring",
+            source = "DuckDuckGo Global"
         ),
         JobOffer(
             id = 106L,
@@ -141,7 +161,7 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
             salaryDisplay = "$130,000 - $155,000 USD / yr",
             salaryMinK = 130,
             timezone = "Flexible Global",
-            postedAgo = "Hace 2 días",
+            postedAgo = "Global Remote",
             skills = listOf("Kotlin", "Jetpack Compose", "KMP", "Clean Arch"),
             description = "Construye herramientas de comercio móvil para millones de comerciantes utilizando KMP y Compose.",
             responsibilities = "Crear componentes de diseño reutilizables en Compose y coordinar lógica compartida en KMP.",
@@ -149,7 +169,9 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
             aiVerdict = "Empresa con stack de vanguardia (Compose + KMP). Tu perfil destaca entre los candidatos.",
             matchedSkills = listOf("Kotlin", "Jetpack Compose", "KMP", "Clean Architecture"),
             skillGaps = listOf("GraphQL Apollo"),
-            customPitch = ""
+            customPitch = "",
+            applyUrl = "https://www.shopify.com/careers",
+            source = "Shopify Careers"
         )
     ).map { job ->
         val pitch = AiMatchEngine.generateTailoredPitch(profile, job)
@@ -158,6 +180,34 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
 
     private val _jobs = MutableStateFlow(initialJobs)
     val jobs: StateFlow<List<JobOffer>> = _jobs.asStateFlow()
+
+    private val _syncState = MutableStateFlow(SyncState.IDLE)
+    val syncState: StateFlow<SyncState> = _syncState.asStateFlow()
+
+    private val _syncInfo = MutableStateFlow("Listo para buscar ofertas en la web")
+    val syncInfo: StateFlow<String> = _syncInfo.asStateFlow()
+
+    suspend fun refreshFromWeb(query: String = "") {
+        _syncState.value = SyncState.SYNCING
+        _syncInfo.value = "Consultando ofertas reales en GetOnBrd, Remotive y Jobicy..."
+        try {
+            val liveJobs = liveService.searchWebJobs(query)
+            if (liveJobs.isNotEmpty()) {
+                val combined = (liveJobs + initialJobs).distinctBy {
+                    "${it.company.lowercase().trim()}_${it.title.lowercase().trim()}"
+                }
+                _jobs.value = combined
+                _syncState.value = SyncState.SUCCESS
+                _syncInfo.value = "Sincronizado: ${liveJobs.size} ofertas reales vivas desde la web"
+            } else {
+                _syncState.value = SyncState.SUCCESS
+                _syncInfo.value = "Búsqueda web completada. Mostrando vacantes activas."
+            }
+        } catch (e: Exception) {
+            _syncState.value = SyncState.ERROR
+            _syncInfo.value = "Fallo de red al consultar APIs web. Mostrando vacantes en caché."
+        }
+    }
 
     fun filterAndSort(
         query: String,
@@ -181,7 +231,8 @@ class JobRepository(private val profile: DeveloperProfile = DeveloperProfile()) 
                 val matchTitle = job.title.lowercase().contains(q)
                 val matchCompany = job.company.lowercase().contains(q)
                 val matchSkill = job.skills.any { it.lowercase().contains(q) }
-                if (!matchTitle && !matchCompany && !matchSkill) return@filter false
+                val matchLoc = job.location.lowercase().contains(q)
+                if (!matchTitle && !matchCompany && !matchSkill && !matchLoc) return@filter false
             }
 
             true

@@ -36,5 +36,7 @@ data class JobOffer(
     val skillGaps: List<String>,
     val customPitch: String,
     var isSaved: Boolean = false,
-    var status: ApplicationStatus = ApplicationStatus.NONE
+    var status: ApplicationStatus = ApplicationStatus.NONE,
+    val applyUrl: String = "",
+    val source: String = "Web"
 )
